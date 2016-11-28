@@ -21,7 +21,9 @@ endif()
 # Set include directories
 include_directories(${GBENCH_INCLUDE_DIR})
 
-set(BENCH_FILES_SRC example1.cpp)
+set(BENCH_FILES_SRC example1.cpp
+                    example2.cpp
+)
 
 add_executable(benchmark_example ${BENCH_FILES_SRC})
 

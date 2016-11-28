@@ -1,11 +1,11 @@
-
 #include <vector>
-#include <iostream>
 #include <benchmark/benchmark_api.h>
 
+namespace {
+// Example 1.a
 void BM_sum_vector(benchmark::State &state){
     while(state.KeepRunning()){
-        size_t n = state.range(0);
+      size_t n = 100;
         std::vector<double> vec(n, 1.0);
         double sum = 0;
         for(auto & item : vec){
@@ -13,23 +13,36 @@ void BM_sum_vector(benchmark::State &state){
         }
     }
 }
-BENCHMARK(BM_sum_vector)->RangeMultiplier(2)->Range(2, 81);
+BENCHMARK(BM_sum_vector);
 
-
-static void BM_memcpy(benchmark::State &state) {
-  char *src = new char[state.range(0)];
-  char *dst = new char[state.range(0)];
-  memset(src, 'x', state.range(0));
-  while (state.KeepRunning())
-    memcpy(dst, src, state.range(0));
-  state.SetBytesProcessed(int64_t(state.iterations()) *
-                          int64_t(state.range(0)));
-  delete[] src;
-  delete[] dst;
+// Example 1.b
+void BM_sum_vector_with_arg(benchmark::State &state) {
+  while (state.KeepRunning()) {
+    size_t n = state.range(0);
+    std::vector<double> vec(n, 1.0);
+    double sum = 0;
+    for (auto &item : vec) {
+      sum += item;
+    }
+  }
 }
- BENCHMARK(BM_memcpy)->Arg(8)->Arg(64)->Arg(512)->Arg(1 << 10)->Arg(8 << 10);
+BENCHMARK(BM_sum_vector_with_arg)->Arg(50);
 
-static void square_n_operation(benchmark::State &state) {
+// Example 1.c
+void BM_sum_vector_with_range(benchmark::State &state) {
+  while (state.KeepRunning()) {
+    size_t n = state.range(0);
+    std::vector<double> vec(n, 1.0);
+    double sum = 0;
+    for (auto &item : vec) {
+      sum += item;
+    }
+  }
+}
+BENCHMARK(BM_sum_vector_with_range)->RangeMultiplier(2)->Range(2, 81);
+
+// Example 1.d
+static void BM_square_n_operation(benchmark::State &state) {
   size_t n = state.range(0);
   std::vector<size_t> vec(n, 1);
   while (state.KeepRunning()) {
@@ -43,11 +56,10 @@ static void square_n_operation(benchmark::State &state) {
   }
   state.SetComplexityN(n);
 }
-
-
-BENCHMARK(square_n_operation)
+BENCHMARK(BM_square_n_operation)
     ->RangeMultiplier(2)
     ->Range(1 << 8, 1 << 14)
     ->Complexity();
+}
 
 BENCHMARK_MAIN()
